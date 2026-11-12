@@ -111,11 +111,46 @@ figcaption{color:var(--muted);font-size:.95rem;margin-top:.6rem}
   .bonus video{max-width:420px}
 }
 @media (max-width:560px){ .gallery{grid-template-columns:1fr} }
+
+/* Hamburger menu */
+.menu-btn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;z-index:50;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:var(--navy);color:var(--navy-ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.menu-btn:focus-visible,.menu a:focus-visible{outline:3px solid var(--led-yellow);outline-offset:3px}
+.menu-btn .bars,.menu-btn .bars::before,.menu-btn .bars::after{display:block;width:20px;height:2px;border-radius:2px;background:currentColor;position:relative;transition:transform .2s,background .2s}
+.menu-btn .bars::before,.menu-btn .bars::after{content:"";position:absolute;left:0}
+.menu-btn .bars::before{top:-6px}.menu-btn .bars::after{top:6px}
+.menu-btn[aria-expanded="true"] .bars{background:transparent}
+.menu-btn[aria-expanded="true"] .bars::before{transform:translateY(6px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .bars::after{transform:translateY(-6px) rotate(-45deg)}
+.menu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);right:14px;z-index:49;width:min(280px,calc(100vw - 28px));background:var(--navy);color:var(--navy-ink);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:.5rem;box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.menu[hidden]{display:none}
+.menu ul{list-style:none;margin:0;padding:0}
+.menu a{display:flex;align-items:center;gap:.7rem;padding:.65rem .8rem;border-radius:6px;text-decoration:none;color:var(--navy-ink)}
+.menu a:hover{background:rgba(255,255,255,.1)}
+.menu a[aria-current="page"]{background:rgba(255,255,255,.14);font-weight:700}
+.menu .sep{height:1px;background:rgba(255,255,255,.18);margin:.4rem .5rem}
+.menu .led{width:12px;height:12px}
+.menu .dot{width:12px;height:12px;flex:none}
+@media (prefers-reduced-motion: reduce){.menu-btn .bars,.menu-btn .bars::before,.menu-btn .bars::after{transition:none}}
 </style>
 </head>
 <body>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu"><span class="bars" aria-hidden="true"></span></button>
+<nav id="site-menu" class="menu" aria-label="Site" hidden>
+  <ul>
+    <li><a href="#top" aria-current="page"><span class="dot" aria-hidden="true"></span>Home</a></li>
+    <li><a href="#siren"><span class="led siren" aria-hidden="true"></span>Police siren</a></li>
+    <li><a href="#blinker"><span class="led red" aria-hidden="true"></span>LDR blinker</a></li>
+    <li><a href="#dimmer"><span class="led yellow" aria-hidden="true"></span>Reversed dimmer</a></li>
+    <li><a href="#rainbow"><span class="led rgb" aria-hidden="true"></span>RGB rainbow</a></li>
+    <li><a href="#gallery"><span class="dot" aria-hidden="true"></span>Gallery</a></li>
+  </ul>
+  <div class="sep" role="presentation"></div>
+  <ul>
+    <li><a href="video.html"><span class="dot" aria-hidden="true"></span>Project video</a></li>
+  </ul>
+</nav>
 
-<header class="hero">
+<header class="hero" id="top">
   <div class="wrap">
     <div>
       <h1>Pico-0: Getting Started with Raspberry Pi Pico</h1>
@@ -252,5 +287,15 @@ figcaption{color:var(--muted);font-size:.95rem;margin-top:.6rem}
     <p>GE1501 Cornerstone of Engineering 1, Fall 2026</p>
   </div>
 </footer>
+<script>
+(function(){
+  var btn=document.querySelector('.menu-btn'),menu=document.getElementById('site-menu');
+  function set(open){btn.setAttribute('aria-expanded',open);menu.hidden=!open;btn.setAttribute('aria-label',open?'Close menu':'Open menu');}
+  btn.addEventListener('click',function(e){e.stopPropagation();set(menu.hidden);});
+  menu.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});
+  document.addEventListener('click',function(e){if(!menu.hidden&&!menu.contains(e.target))set(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidden){set(false);btn.focus();}});
+})();
+</script>
 </body>
 </html>
