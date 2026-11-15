@@ -158,7 +158,7 @@ thead th:not(:first-child){text-align:right}
 <section id="step1" class="step">
 <div class="wrap">
 <div class="ch-head"><span class="led yellow" aria-hidden="true"></span><div><p class="ch-num">Step 1</p><h2>Tilt switch, no code</h2></div></div>
-<div class="explain"><p>The LED stays on while the board is flat and turns off when I tilt it. There is no program here: the Pico only supplies power, and the tilt switch opens the loop when it tips, cutting the current to the LED. [PROBLEM I SOLVED]</p></div>
+<div class="explain"><p>The LED stays on while the board is flat and turns off when I tilt it. There is no program here: the Pico only supplies power, and the tilt switch sits in the same loop as the LED, so when it tips it opens the loop and cuts the current. The problem I solved was making the LED react to tilt without needing any code, because the switch itself does the work.</p></div>
 <p class="wiring"><b>Wiring:</b> 3V3(OUT) (pin 36) → tilt switch → 220 Ω resistor → LED long leg (+) → LED short leg (−) → GND (pin 38).</p>
 <h3>Circuit diagram</h3><div class="grid one"><figure class="shot missing" data-slot="step1_drawing"><div class="ph">Hand-drawn circuit diagram</div></figure></div>
 <h3>The circuit</h3><div class="grid"><figure class="shot missing" data-slot="step1_whole"><div class="ph">Photo 1: whole circuit from above</div></figure><figure class="shot missing" data-slot="step1_pins"><div class="ph">Photo 2: Pico pin connections</div></figure><figure class="shot missing" data-slot="step1_parts"><div class="ph">Photo 3: part connections</div></figure></div>
@@ -283,7 +283,7 @@ while True:
 <section id="homework" class="step">
 <div class="wrap">
 <div class="ch-head"><span class="led blue" aria-hidden="true"></span><div><p class="ch-num">Homework project</p><h2>Automatic lid opener</h2></div></div>
-<div class="explain"><p>A hand near the box opens the lid, and after about 3 seconds with no hand it closes again; a knob sets how wide it opens. When the obstacle sensor reads 0, the code remembers the time and moves the servo toward the knob&#x27;s angle one degree at a time, so the lid opens and closes smoothly.</p><p>The hardest part was getting the servo to actually lift the lid: a string pulling the lid and a servo mounted inside the box were both too weak, and a servo that jumps straight to its angle tore itself off the glue. [HOW I FINALLY MOUNTED IT]</p></div>
+<div class="explain"><p>A hand near the box opens the lid, and after about 3 seconds with no hand it closes again; a knob sets how wide it opens. When the obstacle sensor reads 0, the code remembers the time and moves the servo toward the knob&#x27;s angle one degree at a time, so the lid opens and closes smoothly.</p><p>The hardest part was getting the servo to actually lift the lid: a string pulling the lid and a servo mounted inside the box were both too weak, and a servo that jumps straight to its angle tore itself off the glue. I superglued the servo on, made it move one degree at a time, and set the closed angle to 40° (where the lid actually sits shut) so it stops moving as soon as the lid closes instead of straining against it.</p></div>
 <p class="wiring"><b>Wiring:</b> Obstacle avoidance module: VCC → 3V3(OUT) (pin 36), GND → GND, OUT → GP14 (pin 19); it outputs 0 when it sees something close. Potentiometer: outer legs → 3V3 and GND, middle leg → GP26 (pin 31). Servo: 5 V → VBUS (pin 40), GND → GND, signal → GP16 (pin 21).</p>
 <h3>The circuit</h3><div class="grid"><figure class="shot missing" data-slot="homework_whole"><div class="ph">Photo 1: whole circuit from above</div></figure><figure class="shot missing" data-slot="homework_pins"><div class="ph">Photo 2: Pico pin connections</div></figure><figure class="shot missing" data-slot="homework_parts"><div class="ph">Photo 3: part connections</div></figure></div>
 <h3>It works</h3><div class="grid"><figure class="shot missing" data-slot="homework_works"><div class="ph">Photos 4+: circuit in each state</div></figure></div>
@@ -303,8 +303,8 @@ servo = PWM(Pin(16))
 servo.freq(50)
 # servo needs 50 pulses per second
 
-CLOSED_ANGLE = 0
-# change if your lid closes at a different angle
+CLOSED_ANGLE = 40
+# the angle where my lid sits closed, so the servo stops instead of pushing past it
 STAY_OPEN_MS = 3000
 # how long the lid stays open after the hand leaves
 STEP = 1
